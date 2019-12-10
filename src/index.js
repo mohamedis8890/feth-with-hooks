@@ -1,30 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import axios from "axios";
+import useFetch from "./useFetch";
 
 import "./styles.css";
 
 function App() {
-  const [data, setData] = useState({ hits: [] });
+  const url = "https://hn.algolia.com/api/v1/search?query=";
   const [query, setQuery] = useState("redux");
-  const [search, setSearch] = useState("redux");
-  const [isLoading, setIsLoading] = useState(false);
-  useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get("https://hn.algolia.com/api/v1/search?query=" + search)
-      .then(result => {
-        setData(result.data);
-        setIsLoading(false);
-      });
-  }, [search]);
+  const [{ data, isLoading }, fetch] = useFetch(url + query, { hits: [] });
 
   return (
     <>
       <form
         onSubmit={e => {
           e.preventDefault();
-          setSearch(query);
+          fetch(url + query);
         }}
       >
         <input
